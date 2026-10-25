@@ -1,0 +1,10 @@
+サターン側	Nano	メガドライブ側	Nano
+1 VCC	5V	1 Up	A0
+9 GND	GND	2 Down	A1
+5 SEL0	D4	3 Left	A2
+4 SEL1	D5	4 Right	A3
+3 DATA0	D8	6 B/A	A4
+2 DATA1	D9	9 C/Start	A5
+8 DATA2	D10	7 TH	D2
+7 DATA3	D11	5 +5V	5Vピン
+6 TL	未接続	8 GND	GND
