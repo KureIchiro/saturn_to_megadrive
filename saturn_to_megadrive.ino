@@ -9,7 +9,8 @@
  *     (読み出し直後 100us〜1.5ms の間、または 100ms 以上読み出しが無いとき)
  *  3. MD側出力を オープンドレイン(DDRC切替) から プッシュプル(PORTC) に変更
  *     Hi-Z -> High の立ち上がりがMD側の弱いプルアップ任せだと遅く、読み出しに間に合わない
- *  4. Mode出力 を Saturn の L、3/6ボタン切替予約 を L+R 同時押し に変更 (2.ino は どちらも R だった)
+ *  4. Mode出力 を Saturn の L、6ボタンモード切替予約 を L+R+Start 同時押し に変更
+ *     切替は3ボタンから6ボタンへの一方向。3ボタンに戻すには電源を入れ直す
  *  5. TH に内部プルアップ (ゲームがTHを出力に設定する前の浮きを防ぐ)
  *
  * [LOG] ログ追加版 (この版で追加した部分には [LOG] を付けてある)
@@ -55,7 +56,7 @@
 #define QUIET_CLAMP       60000  // 16bitカウンタ周回対策
 
 #define BG_DIV    128       // ポーリング何回に1回裏の処理を1ステップ進めるか (約60us)
-#define DEBOUNCE  8         // Lのチャタリング除去 (スキャン回数)
+#define DEBOUNCE  8         // 切替コンボのチャタリング除去 (スキャン回数)
 
 // ---------------------------------------------------------------- [LOG] ここから追加
 #define LOG_ENABLE     0    // 0にするとログ関連の処理を止める
@@ -131,7 +132,7 @@ static inline void restartQuietTimer() {
 static bool background(uint8_t edges) {
   static uint8_t step = 0;
   static uint8_t r0 = 0x0F, r1 = 0x0F, r2 = 0x0F, r3 = 0x0F;   // Saturn生データ (押下=0)
-  static bool sixMode = false, pending = false, lStable = false;
+  static bool sixMode = false, pending = false, comboStable = false;
   static uint8_t deb = 0, blink = 0;
 
 #if LOG_ENABLE
@@ -199,13 +200,13 @@ static bool background(uint8_t edges) {
       break;
     }
 
-    case 5: {   // L+R: 3/6ボタン切替の予約 (同時押しのたびにトグル)、リセット検出、LED
-      bool combo = !(r3 & 0x08) && !(r0 & 0x08);   // L と R が両方押されている
-      if (combo != lStable) {
+    case 5: {   // L+R+Start: 6ボタンモードへの切替予約、リセット検出、LED
+      bool combo = !(r3 & 0x08) && !(r0 & 0x08) && !(r2 & 0x08);
+      if (combo != comboStable) {
         if (++deb >= DEBOUNCE) {
-          lStable = combo;
+          comboStable = combo;
           deb = 0;
-          if (combo) pending = !pending;
+          if (combo) pending = true;
         }
       } else {
         deb = 0;

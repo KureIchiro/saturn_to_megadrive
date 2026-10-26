@@ -45,7 +45,7 @@ An Arduino sketch that lets you use a Sega Saturn controller as a Mega Drive-com
 - A、Start → メガドライブのA、Start
 - 6ボタンモード時のみ、サターンのX、Y、Z、L（Mode）→ メガドライブの追加ボタンX、Y、Z、Mode
 
-3/6ボタンモードを切り替えるには、サターンのL（Mode）とRを同時に押して切替を予約し、その後メガドライブ本体のリセットボタンを押してください。リセット中にTH信号が100 ms以上変化しないことを検出すると、予約したモードが反映されます。ArduinoのD13 LEDは、3ボタンモードで消灯、6ボタンモードで点灯、切替予約中は点滅します。
+6ボタンモードにするには、サターンのL（Mode）・R・Startを同時に押して切替を予約し、その後メガドライブ本体のリセットボタンを押してください。リセット中にTH信号が100 ms以上変化しないことを検出すると、6ボタンモードになります。切替は3ボタンから6ボタンへの一方向です。3ボタンモードに戻すには、本体の電源を切って再起動してください。ArduinoのD13 LEDは、3ボタンモードで消灯、6ボタンモードで点灯、切替予約中は点滅します。
 
 ### 任意のシリアルログ
 
@@ -100,7 +100,7 @@ The adapter starts in 3-button mode. Button mapping:
 - Saturn A and Start → Mega Drive A and Start
 - In 6-button mode only, Saturn X, Y, Z, and L (Mode) → extra Mega Drive X, Y, Z, and Mode buttons
 
-Press Saturn L (Mode) and R together to request a 3-/6-button mode change, then press the Mega Drive console's reset button. The change is applied when the adapter detects that the TH signal has not changed for at least 100 ms during reset. The Arduino D13 LED is off in 3-button mode, on in 6-button mode, and blinks while a mode change is pending.
+To switch to 6-button mode, press Saturn L (Mode), R, and Start together, then press the Mega Drive console's reset button. The mode changes when the adapter detects that the TH signal has not changed for at least 100 ms during reset. This is a one-way change from 3-button to 6-button mode. To return to 3-button mode, turn the console off and restart it. The Arduino D13 LED is off in 3-button mode, on in 6-button mode, and blinks while a mode change is pending.
 
 ### Optional serial logging
 
